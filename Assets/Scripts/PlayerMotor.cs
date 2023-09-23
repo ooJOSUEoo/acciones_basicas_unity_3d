@@ -19,6 +19,11 @@ public class PlayerMotor : MonoBehaviour
     public Camera mainCamera;
     private Vector3 camForward;
     private Vector3 camRight;
+
+    public bool isOnSlope = false;
+    private Vector3 hitNormal;
+    public float slideVelocity = 5f;
+    public float slopeForceDown = 10f;
     void Start()
     {
         player = GetComponent<CharacterController>();
@@ -70,6 +75,21 @@ public class PlayerMotor : MonoBehaviour
         }else{
             fallVelocity -= gravity * Time.deltaTime;
         }
-            movePlayer.y = fallVelocity;
+        movePlayer.y = fallVelocity;
+        slideDown();
+    }
+
+    public void slideDown(){
+        isOnSlope = Vector3.Angle(hitNormal, Vector3.up) > player.slopeLimit;
+        if (isOnSlope){
+            movePlayer.x += ((1f - hitNormal.y)*hitNormal.x )* slideVelocity;
+            movePlayer.z += ((1f - hitNormal.y)*hitNormal.z) * slideVelocity;
+
+            movePlayer.y += -slopeForceDown;
+        }
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit){
+        hitNormal = hit.normal;
     }
 }
