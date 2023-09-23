@@ -6,13 +6,18 @@ public class PlayerMotor : MonoBehaviour
 {
     public float horizontalMove;
     public float verticalMove;
-    public float speed = 5f;
-    public CharacterController player;
-    public Camera mainCamera;
     private Vector3 playerInput;
+
+    public CharacterController player;
+
+    public float speed = 5f;
+    private Vector3 movePlayer;
+    public float gravity = 9.8f;
+    public float fallVelocity;
+
+    public Camera mainCamera;
     private Vector3 camForward;
     private Vector3 camRight;
-    private Vector3 movePlayer;
     void Start()
     {
         player = GetComponent<CharacterController>();
@@ -29,10 +34,13 @@ public class PlayerMotor : MonoBehaviour
         camDirection();
 
         movePlayer = playerInput.x * camRight + playerInput.z * camForward;
+        movePlayer = movePlayer * speed;
 
         player.transform.LookAt(player.transform.position + movePlayer);
 
-        player.Move(movePlayer * speed * Time.deltaTime);   
+        setGravity();
+
+        player.Move(movePlayer * Time.deltaTime);   
     }
 
     void camDirection(){
@@ -44,5 +52,14 @@ public class PlayerMotor : MonoBehaviour
 
         camForward = camForward.normalized;
         camRight = camRight.normalized;
+    }
+
+    void setGravity(){
+        if (player.isGrounded){
+            fallVelocity = -gravity * Time.deltaTime;
+        }else{
+            fallVelocity -= gravity * Time.deltaTime;
+        }
+            movePlayer.y = fallVelocity;
     }
 }
