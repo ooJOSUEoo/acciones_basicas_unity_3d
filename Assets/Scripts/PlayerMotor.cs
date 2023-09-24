@@ -6,6 +6,7 @@ public class PlayerMotor : MonoBehaviour
 {
     public float horizontalMove;
     public float verticalMove;
+    public bool shift;
     private Vector3 playerInput;
 
     public CharacterController player;
@@ -24,18 +25,30 @@ public class PlayerMotor : MonoBehaviour
     private Vector3 hitNormal;
     public float slideVelocity = 5f;
     public float slopeForceDown = 10f;
+
+    public Animator playerAnimatorController;
     void Start()
     {
         player = GetComponent<CharacterController>();
+        playerAnimatorController = GetComponent<Animator>();
     } 
 
     void Update()
     {
         horizontalMove = Input.GetAxisRaw("Horizontal");
         verticalMove = Input.GetAxisRaw("Vertical");
+        shift = Input.GetKey(KeyCode.LeftShift);
 
         playerInput = new Vector3(horizontalMove, 0, verticalMove);
         playerInput = Vector3.ClampMagnitude(playerInput, 1);
+
+        if (shift){
+            speed = 10f;
+        }else{
+            speed = 5f;
+        }
+
+        playerAnimatorController.SetFloat("velocity", playerInput.magnitude * speed);
 
         camDirection();
 
@@ -66,6 +79,7 @@ public class PlayerMotor : MonoBehaviour
         if (player.isGrounded && Input.GetButtonDown("Jump")){
             fallVelocity = jumpHeight;
             movePlayer.y = fallVelocity;
+            playerAnimatorController.SetTrigger("jump");
         }
     }
 
@@ -74,8 +88,10 @@ public class PlayerMotor : MonoBehaviour
             fallVelocity = -gravity * Time.deltaTime;
         }else{
             fallVelocity -= gravity * Time.deltaTime;
+            playerAnimatorController.SetFloat("fallVelocity", player.velocity.y);
         }
         movePlayer.y = fallVelocity;
+        playerAnimatorController.SetBool("isGrounded", player.isGrounded);
         slideDown();
     }
 
@@ -92,4 +108,21 @@ public class PlayerMotor : MonoBehaviour
     private void OnControllerColliderHit(ControllerColliderHit hit){
         hitNormal = hit.normal;
     }
+
+    private void OnTriggerStay(Collider other){
+        if (other.tag == "MovingPlatform"){
+            player.transform.SetParent(other.transform);
+        }
+    }
+
+    private void OnTriggerExit(Collider other){
+        if (other.tag == "MovingPlatform"){
+            player.transform.SetParent(null);
+        }
+    }
+
+    private void OnAnimatorMove(){
+        
+    }
 }
+
