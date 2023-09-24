@@ -11,7 +11,7 @@ public class PlayerMotor : MonoBehaviour
 
     public CharacterController player;
 
-    public float speed = 5f;
+    public float speed = 2f;
     private Vector3 movePlayer;
     public float gravity = 9.8f;
     public float fallVelocity;
@@ -27,10 +27,19 @@ public class PlayerMotor : MonoBehaviour
     public float slopeForceDown = 10f;
 
     public Animator playerAnimatorController;
+    private Animator amongusObject;
     void Start()
     {
         player = GetComponent<CharacterController>();
-        playerAnimatorController = GetComponent<Animator>();
+        Transform figuraTransform = transform.Find("amongus_player");
+        mainCamera = GameObject.Find("mainCamera").GetComponent<Camera>();
+        // playerAnimatorController = GetComponent<Animator>();
+        if (figuraTransform != null)
+        {
+            // Obtén el componente Animator dentro de "figura"
+            playerAnimatorController = figuraTransform.GetComponent<Animator>();
+
+        }
     } 
 
     void Update()
@@ -43,9 +52,9 @@ public class PlayerMotor : MonoBehaviour
         playerInput = Vector3.ClampMagnitude(playerInput, 1);
 
         if (shift){
-            speed = 10f;
-        }else{
             speed = 5f;
+        }else{
+            speed = 2f;
         }
 
         playerAnimatorController.SetFloat("velocity", playerInput.magnitude * speed);
