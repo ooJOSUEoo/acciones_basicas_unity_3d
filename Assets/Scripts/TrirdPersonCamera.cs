@@ -8,6 +8,7 @@ public class TrirdPersonCamera : MonoBehaviour
     private Transform target;
     [Range (0, 1)]public float lerpValue = 1f;
     public float sencibility = 4f;
+    public float minY = -60f;// Establece el ángulo máximo en Y
     void Start()
     {
         target = GameObject.FindGameObjectWithTag("Player").transform;
@@ -18,6 +19,8 @@ public class TrirdPersonCamera : MonoBehaviour
         transform.position = Vector3.Lerp(transform.position, target.position + offset, lerpValue);  
         offset = Quaternion.AngleAxis(Input.GetAxis("Mouse X") * sencibility, Vector3.up) * offset;   
         offset = Quaternion.AngleAxis(Input.GetAxis("Mouse Y") * sencibility, Vector3.left) * offset;
+        offset = Quaternion.AngleAxis(Input.GetAxis("Joystick X") * sencibility, Vector3.up) * offset;
+        offset = Quaternion.AngleAxis(Input.GetAxis("Joystick Y") * sencibility, Vector3.left) * offset;
         transform.LookAt(target);   
     }
 }

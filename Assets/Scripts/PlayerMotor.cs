@@ -11,7 +11,7 @@ public class PlayerMotor : MonoBehaviour
 
     public CharacterController player;
 
-    public float speed = 2f;
+    public float speed;
     private Vector3 movePlayer;
     public float gravity = 9.8f;
     public float fallVelocity;
@@ -28,6 +28,7 @@ public class PlayerMotor : MonoBehaviour
 
     public Animator playerAnimatorController;
     private Animator amongusObject;
+
     void Start()
     {
         player = GetComponent<CharacterController>();
@@ -46,7 +47,7 @@ public class PlayerMotor : MonoBehaviour
     {
         horizontalMove = Input.GetAxisRaw("Horizontal");
         verticalMove = Input.GetAxisRaw("Vertical");
-        shift = Input.GetKey(KeyCode.LeftShift);
+        shift = Input.GetAxisRaw("Run") > 0 ? true : false;
 
         playerInput = new Vector3(horizontalMove, 0, verticalMove);
         playerInput = Vector3.ClampMagnitude(playerInput, 1);
@@ -89,6 +90,11 @@ public class PlayerMotor : MonoBehaviour
             fallVelocity = jumpHeight;
             movePlayer.y = fallVelocity;
             playerAnimatorController.SetTrigger("jump");
+        }
+        //cuando precione la tetla C
+        if (player.isGrounded && Input.GetButtonDown("Lean")){
+            playerAnimatorController.SetTrigger("lean");           
+            // player.transform.rotation = Quaternion.Euler(90, 0, 0);
         }
     }
 
@@ -134,4 +140,3 @@ public class PlayerMotor : MonoBehaviour
         
     }
 }
-
