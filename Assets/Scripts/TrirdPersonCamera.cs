@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TrirdPersonCamera : MonoBehaviour
 {
-    public Vector3 offset = new Vector3(0, 2, -3);
+    public Vector3 offset = new Vector3(0, 2, -2);
     private Transform target;
     [Range (0, 1)]public float lerpValue = 1f;
     public float sencibility = 4f;
@@ -21,6 +21,6 @@ public class TrirdPersonCamera : MonoBehaviour
         offset = Quaternion.AngleAxis(Input.GetAxis("Mouse Y") * sencibility, Vector3.left) * offset;
         offset = Quaternion.AngleAxis(Input.GetAxis("Joystick X") * sencibility, Vector3.up) * offset;
         offset = Quaternion.AngleAxis(Input.GetAxis("Joystick Y") * sencibility, Vector3.left) * offset;
-        transform.LookAt(target);   
+        transform.LookAt(target); 
     }
 }
